@@ -1,5 +1,4 @@
-
- let config = {
+let config = {
     apiKey: "AIzaSyC329vGMXLuMFL0BKPCjtbXYcCgWS6oD0k",
     authDomain: "train-scheduler-6f82b.firebaseapp.com",
     databaseURL: "https://train-scheduler-6f82b.firebaseio.com",
@@ -17,7 +16,7 @@ $('#add-button').on('click', function(){
 
     event.preventDefault();
 
-    let trainName = $('#train-time').val();
+    let trainName = $('#train-name').val();
     let trainDest = $('#train-destination').val();
     let trainTime = $('#train-time').val();
     let trainFreq = $('#train-frequency').val();
@@ -45,51 +44,7 @@ function createTrain(name, dest, time, freq){
         Freq: freq
     });
 
-    $('#table').empty();
-
-
-    database.ref().on('child_added', function(snapshot){
-
-        let val = snapshot.val();
-        //console.log(snapshot);
-       // console.log(val.Name);
-
-       //let nextTrain = convertDate(val.Time);
-    //    let start = val.Rate;
-
-    //    let totalBilled = parseInt(monthsWorked) * parseInt(start);
-       
-
-
-
-        $('#tbody').append(
-            `
-            <tr>
-              <td>
-              ${val.Name}
-              </td>
-              <td>
-              ${val.Destination}
-              </td>
-              <td>
-              ${val.Freq}
-              </td>
-              <td>
-              
-              </td>
-              <td>
-              
-              </td>
-            </tr>
-            
-            
-            `
-        )
-
-
-       
-
-    });
+   
 
    // function convertDate(startDate){
 
@@ -118,3 +73,39 @@ function createTrain(name, dest, time, freq){
    // }
 
 }
+
+function updateTrains(){
+
+    $('#table').empty();
+
+    database.ref().on('child_added', function(snapshot){
+
+        let val = snapshot.val();
+
+        $('#tbody').append(
+            `
+            <tr>
+              <td>
+              ${val.Name}
+              </td>
+              <td>
+              ${val.Destination}
+              </td>
+              <td>
+              ${val.Freq}
+              </td>
+              <td>
+              
+              </td>
+              <td>
+              
+              </td>
+            </tr>
+            `
+        )
+
+    });
+}
+
+//Update the train list on load
+updateTrains();
