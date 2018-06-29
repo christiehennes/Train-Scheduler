@@ -18,8 +18,8 @@ $('#add-button').on('click', function(){
 
     let trainName = $('#train-name').val();
     let trainDest = $('#train-destination').val();
-    let trainTime = $('#train-time').val();
-    let trainFreq = $('#train-frequency').val();
+    let trainTime = parseInt($('#train-time').val());
+    let trainFreq = parseInt($('#train-frequency').val());
 
 
     console.log(trainName);
@@ -27,7 +27,8 @@ $('#add-button').on('click', function(){
     console.log(trainTime);
     console.log(trainFreq);
 
-    createTrain(trainName, trainDest, trainTime, trainFreq);
+    let nextTrain = calcNextTrain(trainTime, trainFreq);
+    createTrain(trainName, trainDest, trainTime, trainFreq, nextTrain.nextTrain, nextTrain.numMins );
     
 
 });
@@ -35,42 +36,58 @@ $('#add-button').on('click', function(){
 //Functions
 
 //Create employee -- push the data up to the db
-function createTrain(name, dest, time, freq){
+function createTrain(name, dest, time, freq, next, mins){
 
     database.ref().push({
         Name: name,
         Destination: dest,
         Time: time,
-        Freq: freq
+        Freq: freq,
+        NextTrain: next,
+        MinsAway: mins
     });
 
-   
+}
 
-   // function convertDate(startDate){
+function calcNextTrain(time, freq){
 
-    //     console.log(startDate);
+//Get the current time in minutes
+let now = parseInt((moment().hour() * 60) + moment().minute());
+console.log(now);
 
-    //     //Get the time now 
-    //     let todayDate = Date.now();
-    //     console.log(todayDate);
+//Convert the start time to minutes
+let start = parseInt((moment(time, "HH:mm").hour()*60) + moment(time, "HH:mm").minute());
+console.log(start);
 
+//compare the times. if star is before current, back pedal to find the difference
+if (start < now){
+    let diff = now - start;
+    if (diff % freq === 0){
+        console.log("time is now");
 
-    //    //Convert the startDate into a different time format  
-    //    let convertedTime = Date(startDate);
-    //    console.log(convertedTime);
+        let nextObj = {
+            nextTrain: moment().minutes(now+freq).format("HH:mm"),
+            numMins: freq
+        };
+        return nextObj;
+    }
+    else{
+       let delta = diff % freq;
+       console.log(diff);
+       console.log(delta);
 
-    //    var array = new Array();
+       console.log(now);
+       let next = parseInt(now + freq) - parseInt(delta);
+       let mins = freq - delta;
+       console.log(next);
+        let nextObj = {
+            nextTrain: moment().minutes(next).format("HH:mm"),
+            numMins: mins
+        };
+        return nextObj;
+    }
+}
 
-    //    array = startDate.split('/');
-    //     let mili = Date.UTC(array[2], array[0], array[1]);
-    //     console.log(mili);
-
-        //return monthsWorked = Math.abs(moment().diff(moment(startDate), 'months'));
-
-
-    //    var convertedTime_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-    //     date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-   // }
 
 }
 
@@ -95,10 +112,10 @@ function updateTrains(){
               ${val.Freq}
               </td>
               <td>
-              
+              ${val.NextTrain}
               </td>
               <td>
-              
+              ${val.MinsAway}
               </td>
             </tr>
             `
