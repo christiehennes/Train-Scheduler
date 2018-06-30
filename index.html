@@ -9,7 +9,7 @@
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     
 </head>
-<body>
+<body id="body">
     
     <div class="jumbotron jumbotron-fluid" style="color: white; background-color: rgba(14, 11, 11, 0.904);">
         <div class="container">
@@ -43,10 +43,11 @@
     <div class="card mt-3">
             <h5 class="card-header">Add Train</h5>
             <div class="card-body">
-                <form>
+                <form clas=="needs-validation">
                     <div class="form-group">
                         <label for="search-term">Train Name</label>
                         <input type="text" class="form-control" id="train-name" aria-describedby="train-name">
+
                     </div>
                     <div class="form-group">
                         <label for="start-year">Destination</label>
@@ -57,14 +58,18 @@
                         <input type="text" class="form-control" id="train-time" aria-describedby="train-time">
                     </div>
                     <div class="form-group">
-                            <label for="end-year">Frequency (min)</label>
-                            <input type="text" class="form-control" id="train-frequency" aria-describedby="train-frequency">
-                        </div>
-                
-                    <button type="add-button" class="btn btn-primary" id="add-button">Add</button>
-                </form>
+                        <label for="end-year">Frequency (min)</label>
+                        <input type="text" class="form-control" id="train-frequency" aria-describedby="train-frequency">
+                    </div>
             
-            </div>
+                <button type="add-button" class="btn btn-primary" id="add-button">Add</button>
+            </form>
+        
+        </div>
+    </div>
+
+
+
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

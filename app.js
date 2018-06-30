@@ -18,18 +18,20 @@ $('#add-button').on('click', function(){
 
     let trainName = $('#train-name').val();
     let trainDest = $('#train-destination').val();
-    let trainTime = parseInt($('#train-time').val());
+    let trainTime = $('#train-time').val();
     let trainFreq = parseInt($('#train-frequency').val());
 
 
-    console.log(trainName);
-    console.log(trainDest);
-    console.log(trainTime);
-    console.log(trainFreq);
+    if ((trainName === '' || trainDest === '' || trainTime === '' || trainFreq === '')){
+        displayError();
+    }
+    else{
 
-    let nextTrain = calcNextTrain(trainTime, trainFreq);
-    createTrain(trainName, trainDest, trainTime, trainFreq, nextTrain.nextTrain, nextTrain.numMins );
-    
+        let nextTrain = calcNextTrain(trainTime, trainFreq);
+        createTrain(trainName, trainDest, trainTime, trainFreq, nextTrain.nextTrain, nextTrain.numMins );
+        
+    }
+
 
 });
 
@@ -51,41 +53,76 @@ function createTrain(name, dest, time, freq, next, mins){
 
 function calcNextTrain(time, freq){
 
+let now = 0;
+let next = 0;
+let start = 0;
+
 //Get the current time in minutes
-let now = parseInt((moment().hour() * 60) + moment().minute());
+now = parseInt((moment().hour() * 60) + moment().minute());
 console.log(now);
 
 //Convert the start time to minutes
-let start = parseInt((moment(time, "HH:mm").hour()*60) + moment(time, "HH:mm").minute());
+start = parseInt((moment(time, "hh:mm").hour()*60) + moment(time, "hh:mm").minute());
 console.log(start);
 
 //compare the times. if star is before current, back pedal to find the difference
 if (start < now){
     let diff = now - start;
-    if (diff % freq === 0){
-        console.log("time is now");
 
+    //If the difference and frequency hit an even number, find the time 
+    if (diff % freq === 0){
+
+        //Start the formatting
+        next = Math.floor((now+freq) / 60) + ':';
+
+        //Complete the formatting
+        if(((now+freq) % 60) < 10){
+            next = next + '0' + ((now+freq) % 60);
+        }
+        else{
+            next = next + ((now+freq)%60);
+        }
+
+        //Create object and return it 
         let nextObj = {
-            nextTrain: moment().minutes(now+freq).format("HH:mm"),
+            nextTrain: next,
             numMins: freq
         };
         return nextObj;
     }
+    //Else, find the correct time 
     else{
        let delta = diff % freq;
-       console.log(diff);
-       console.log(delta);
-
-       console.log(now);
        let next = parseInt(now + freq) - parseInt(delta);
        let mins = freq - delta;
-       console.log(next);
+
+      next =  Math.floor(next / 60) + ':' + (next % 60);
+
         let nextObj = {
-            nextTrain: moment().minutes(next).format("HH:mm"),
+            nextTrain: next,
             numMins: mins
         };
         return nextObj;
     }
+}
+else{
+
+    let minsUntil = start - now;
+
+    time = Math.floor(start / 60) + ':';
+    if(start % 60 === 0){
+        time = time + '00';
+    }
+    else{
+        time = time + '0' + (start%60);
+    }
+
+    let nextObj = {
+        nextTrain: time,
+        numMins: minsUntil
+
+    }
+    return nextObj;
 }
 
 
@@ -123,6 +160,14 @@ function updateTrains(){
 
     });
 }
+
+function displayError(){
+
+    alert("Please enter a value for all fields to add to table");
+
+}
+
+
 
 //Update the train list on load
 updateTrains();
